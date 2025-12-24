@@ -1,0 +1,533 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Vocabulary Flashcards - Abstract Nouns</title>
+    <link href="https://fonts.googleapis.com/css2?family=Merriweather:wght@400;700&family=Open+Sans:wght@400;600&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Open Sans', sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 800px;
+            width: 100%;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .main-title {
+            font-size: 52px;
+            color: white;
+            font-weight: 700;
+            margin-bottom: 15px;
+            text-shadow: 3px 3px 6px rgba(0, 0, 0, 0.3);
+            font-family: 'Merriweather', serif;
+        }
+
+        .instructions {
+            font-size: 18px;
+            color: rgba(255, 255, 255, 0.95);
+            margin-bottom: 20px;
+            line-height: 1.6;
+            max-width: 600px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        .progress {
+            font-size: 24px;
+            color: white;
+            font-weight: 600;
+            margin-bottom: 10px;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.2);
+        }
+
+        .shuffle-btn {
+            background: white;
+            color: #667eea;
+            border: none;
+            padding: 12px 30px;
+            font-size: 16px;
+            font-weight: 600;
+            border-radius: 25px;
+            cursor: pointer;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+            transition: all 0.3s ease;
+            font-family: 'Open Sans', sans-serif;
+        }
+
+        .shuffle-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(0, 0, 0, 0.3);
+            background: #f0f0f0;
+        }
+
+        .card-container {
+            perspective: 1000px;
+            margin-bottom: 40px;
+        }
+
+        .flashcard {
+            width: 100%;
+            height: 400px;
+            position: relative;
+            transform-style: preserve-3d;
+            transition: transform 0.6s;
+            cursor: pointer;
+        }
+
+        .flashcard.flipped {
+            transform: rotateY(180deg);
+        }
+
+        .card-face {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            backface-visibility: hidden;
+            border-radius: 15px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            padding: 40px;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.3);
+        }
+
+        .card-front {
+            background: linear-gradient(135deg, #ffffff 0%, #f8f9fa 100%);
+            border: 1px solid #e0e0e0;
+        }
+
+        .card-back {
+            background: linear-gradient(135deg, #ffecd2 0%, #fcb69f 100%);
+            transform: rotateY(180deg);
+            border: 1px solid #f0a080;
+        }
+
+        .card-label {
+            font-size: 14px;
+            color: #999;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            margin-bottom: 20px;
+            font-weight: 600;
+        }
+
+        .card-content {
+            font-family: 'Merriweather', serif;
+            text-align: center;
+            line-height: 1.6;
+        }
+
+        .card-front .card-content {
+            font-size: 48px;
+            font-weight: 700;
+            color: #333;
+        }
+
+        .card-back .card-content {
+            font-size: 24px;
+            color: #444;
+        }
+
+        .click-hint {
+            position: absolute;
+            bottom: 20px;
+            font-size: 14px;
+            color: #999;
+            font-style: italic;
+        }
+
+        .controls {
+            display: flex;
+            justify-content: center;
+            gap: 30px;
+            align-items: center;
+        }
+
+        .nav-btn {
+            background: white;
+            color: #667eea;
+            border: none;
+            padding: 18px 40px;
+            font-size: 20px;
+            font-weight: 600;
+            border-radius: 30px;
+            cursor: pointer;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+            transition: all 0.3s ease;
+            font-family: 'Open Sans', sans-serif;
+            min-width: 150px;
+        }
+
+        .nav-btn:hover:not(:disabled) {
+            transform: translateY(-3px);
+            box-shadow: 0 6px 20px rgba(0, 0, 0, 0.3);
+            background: #f0f0f0;
+        }
+
+        .nav-btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        .nav-btn:active:not(:disabled) {
+            transform: translateY(-1px);
+        }
+
+        @media (max-width: 768px) {
+            body {
+                padding: 15px;
+            }
+
+            .flashcard {
+                height: 350px;
+            }
+
+            .card-front .card-content {
+                font-size: 36px;
+            }
+
+            .card-back .card-content {
+                font-size: 20px;
+            }
+
+            .nav-btn {
+                padding: 15px 30px;
+                font-size: 18px;
+                min-width: 120px;
+            }
+
+            .controls {
+                gap: 15px;
+            }
+
+            .main-title {
+                font-size: 42px;
+            }
+
+            .instructions {
+                font-size: 16px;
+                padding: 0 10px;
+            }
+
+            .header {
+                margin-bottom: 25px;
+            }
+
+            .card-container {
+                margin-bottom: 30px;
+            }
+        }
+
+        @media (max-width: 480px) {
+            body {
+                padding: 10px;
+            }
+
+            .flashcard {
+                height: 320px;
+            }
+
+            .card-front .card-content {
+                font-size: 32px;
+            }
+
+            .card-back .card-content {
+                font-size: 18px;
+                line-height: 1.5;
+            }
+
+            .card-face {
+                padding: 25px 15px;
+            }
+
+            .main-title {
+                font-size: 36px;
+                margin-bottom: 10px;
+            }
+
+            .instructions {
+                font-size: 15px;
+                margin-bottom: 15px;
+            }
+
+            .progress {
+                font-size: 20px;
+                margin-bottom: 8px;
+            }
+
+            .shuffle-btn {
+                padding: 10px 25px;
+                font-size: 15px;
+            }
+
+            .nav-btn {
+                padding: 14px 25px;
+                font-size: 16px;
+                min-width: 100px;
+            }
+
+            .controls {
+                gap: 12px;
+                flex-wrap: wrap;
+            }
+
+            .card-label {
+                font-size: 12px;
+                margin-bottom: 15px;
+            }
+
+            .click-hint {
+                font-size: 12px;
+                bottom: 15px;
+            }
+
+            .header {
+                margin-bottom: 20px;
+            }
+
+            .card-container {
+                margin-bottom: 25px;
+            }
+        }
+
+        /* iPhone SE and very small screens */
+        @media (max-width: 375px) {
+            .flashcard {
+                height: 280px;
+            }
+
+            .card-front .card-content {
+                font-size: 28px;
+            }
+
+            .card-back .card-content {
+                font-size: 16px;
+            }
+
+            .main-title {
+                font-size: 32px;
+            }
+
+            .nav-btn {
+                padding: 12px 20px;
+                font-size: 15px;
+                min-width: 90px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1 class="main-title">Abstract Nouns</h1>
+            <p class="instructions">
+                📖 Click on any card to flip it and reveal the definition. Use the Next and Previous buttons to navigate through the cards, or click Shuffle to randomize the order!
+            </p>
+            <div class="progress" id="progress">Card 1 of 12</div>
+            <button class="shuffle-btn" id="shuffleBtn">🔀 Shuffle Cards</button>
+        </div>
+
+        <div class="card-container">
+            <div class="flashcard" id="flashcard">
+                <div class="card-face card-front">
+                    <div class="card-label">Term</div>
+                    <div class="card-content" id="term">Bravery</div>
+                    <div class="click-hint">Click to flip</div>
+                </div>
+                <div class="card-face card-back">
+                    <div class="card-label">Definition</div>
+                    <div class="card-content" id="definition">The quality of spirit that enables a person to face danger or pain without showing fear.</div>
+                    <div class="click-hint">Click to flip back</div>
+                </div>
+            </div>
+        </div>
+
+        <div class="controls">
+            <button class="nav-btn" id="prevBtn">← Previous</button>
+            <button class="nav-btn" id="nextBtn">Next →</button>
+        </div>
+    </div>
+
+    <script>
+        // Vocabulary data
+        const vocabularyData = [
+            {
+                term: "Bravery",
+                definition: "The quality of spirit that enables a person to face danger or pain without showing fear."
+            },
+            {
+                term: "Integrity",
+                definition: "The quality of being honest and having strong moral principles; moral uprightness."
+            },
+            {
+                term: "Empathy",
+                definition: "The ability to understand and share the feelings of another person."
+            },
+            {
+                term: "Resilience",
+                definition: "The capacity to recover quickly from difficulties; toughness."
+            },
+            {
+                term: "Nostalgia",
+                definition: "A sentimental longing or wistful affection for the past, typically for a period or place with happy personal associations."
+            },
+            {
+                term: "Ambition",
+                definition: "A strong desire to do or to achieve something, typically requiring determination and hard work."
+            },
+            {
+                term: "Liberty",
+                definition: "The state of being free within society from oppressive restrictions imposed by authority."
+            },
+            {
+                term: "Wisdom",
+                definition: "The quality of having experience, knowledge, and good judgment."
+            },
+            {
+                term: "Curiosity",
+                definition: "A strong desire to know or learn something."
+            },
+            {
+                term: "Chaos",
+                definition: "Complete disorder and confusion."
+            },
+            {
+                term: "Euphoria",
+                definition: "A feeling or state of intense excitement and happiness."
+            },
+            {
+                term: "Melancholy",
+                definition: "A feeling of pensive sadness, typically with no obvious cause."
+            }
+        ];
+
+        // State
+        let currentCards = [...vocabularyData];
+        let currentIndex = 0;
+        let isFlipped = false;
+
+        // DOM elements
+        const flashcard = document.getElementById('flashcard');
+        const termElement = document.getElementById('term');
+        const definitionElement = document.getElementById('definition');
+        const progressElement = document.getElementById('progress');
+        const prevBtn = document.getElementById('prevBtn');
+        const nextBtn = document.getElementById('nextBtn');
+        const shuffleBtn = document.getElementById('shuffleBtn');
+
+        // Initialize
+        function init() {
+            updateCard();
+            updateProgress();
+            updateButtons();
+        }
+
+        // Update card content
+        function updateCard() {
+            const currentCard = currentCards[currentIndex];
+            termElement.textContent = currentCard.term;
+            definitionElement.textContent = currentCard.definition;
+            
+            // Reset flip state
+            if (isFlipped) {
+                flashcard.classList.remove('flipped');
+                isFlipped = false;
+            }
+        }
+
+        // Update progress counter
+        function updateProgress() {
+            progressElement.textContent = `Card ${currentIndex + 1} of ${currentCards.length}`;
+        }
+
+        // Update button states
+        function updateButtons() {
+            prevBtn.disabled = currentIndex === 0;
+            nextBtn.disabled = currentIndex === currentCards.length - 1;
+        }
+
+        // Flip card
+        flashcard.addEventListener('click', function() {
+            flashcard.classList.toggle('flipped');
+            isFlipped = !isFlipped;
+        });
+
+        // Previous button
+        prevBtn.addEventListener('click', function() {
+            if (currentIndex > 0) {
+                currentIndex--;
+                updateCard();
+                updateProgress();
+                updateButtons();
+            }
+        });
+
+        // Next button
+        nextBtn.addEventListener('click', function() {
+            if (currentIndex < currentCards.length - 1) {
+                currentIndex++;
+                updateCard();
+                updateProgress();
+                updateButtons();
+            }
+        });
+
+        // Shuffle cards
+        shuffleBtn.addEventListener('click', function() {
+            // Fisher-Yates shuffle algorithm
+            for (let i = currentCards.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [currentCards[i], currentCards[j]] = [currentCards[j], currentCards[i]];
+            }
+            
+            // Reset to first card
+            currentIndex = 0;
+            updateCard();
+            updateProgress();
+            updateButtons();
+            
+            // Visual feedback
+            shuffleBtn.textContent = '✓ Shuffled!';
+            setTimeout(() => {
+                shuffleBtn.textContent = '🔀 Shuffle Cards';
+            }, 1000);
+        });
+
+        // Keyboard navigation
+        document.addEventListener('keydown', function(event) {
+            if (event.key === 'ArrowLeft' && currentIndex > 0) {
+                prevBtn.click();
+            } else if (event.key === 'ArrowRight' && currentIndex < currentCards.length - 1) {
+                nextBtn.click();
+            } else if (event.key === ' ') {
+                event.preventDefault();
+                flashcard.click();
+            }
+        });
+
+        // Initialize the app
+        init();
+    </script>
+</body>
+</html>
